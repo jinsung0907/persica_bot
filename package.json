@@ -1,0 +1,26 @@
+{
+  "name": "persica_bot",
+  "version": "1.0.0",
+  "description": "GirlsFrontline timetable bot for Kakaotalk",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jinsung0907/persica_bot.git"
+  },
+  "keywords": [
+    "node.js"
+  ],
+  "author": "Jinsung",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/jinsung0907/persica_bot/issues"
+  },
+  "homepage": "https://github.com/jinsung0907/persica_bot#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3"
+  }
+}
