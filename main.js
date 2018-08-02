@@ -357,7 +357,9 @@ function getDollFromName(name) {
 }
 
 function convSearch(str) {
-	return str.replace(/ /g,'');
+	if(typeof str !== 'undefined') 
+		return str.replace(/ /g,'');
+	return false;
 }
 
 function getDollFromTime(time) {
