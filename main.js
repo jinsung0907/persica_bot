@@ -17,7 +17,7 @@ var dolls = JSON.parse(fs.readFileSync('json/doll.json', 'utf8'));
 var equips = JSON.parse(fs.readFileSync('json/equip.json', 'utf8'));
 var fairys = JSON.parse(fs.readFileSync('json/fairy.json', 'utf8'));
 
-var mainmenu = ["인형", "장비", "시간표", "제대편성&DPS시뮬"];
+var mainmenu = ["인형", "장비", "시간표", "스토리모음", "제대편성&DPS시뮬"];
 
 app.get('/keyboard', (req, res) => {
 	res.json({"type": "buttons", "buttons": mainmenu});
@@ -35,23 +35,25 @@ app.post('/message', (req, res) => {
 		return;
 	}
 	if(content === "인형") {
-		res.json({"message": { "text": "제조시간 입력 \nex) 8시간 10분->810\n53분->53\n\n인형리스트 : http://gfl.zzzzz.kr/dolls.php" }, "keyboard": { "type": "text" } });
+		res.json({"message": { "text": "제조시간(8:10->810) 또는 인형이름 입력\n\n인형리스트 : http://gfl.zzzzz.kr/dolls.php" }, "keyboard": { "type": "text" } });
 		saveuser(user, 1);
 		return;
 	}
 	else if(content === "장비") {
-		res.json({"message": { "text": "제조시간 입력 \nex) 53분->53\n3시간 5분->305\n\n요정리스트 : http://gfl.zzzzz.kr/fairys.php" }, "keyboard": { "type": "text" } });
+		res.json({"message": { "text": "제조시간(3:05-> 305) 또는 요정이름 입력\n\n요정리스트 : http://gfl.zzzzz.kr/fairys.php" }, "keyboard": { "type": "text" } });
 		saveuser(user, 2);
 		return;
 	}
 	else if(content === "시간표") {
 		res.json({"message": { "text": "제조시간표 : http://gfl.zzzzz.kr/timetable.php" }, "message_button": { "label": "소전DB 제조시간표", "url": "http://gfl.zzzzz.kr/timetable.php" }, "keyboard": {"type": "buttons", "buttons": mainmenu}});
-		//saveuser(user, 2);
+		return;
+	}
+	else if(content === "스토리") {
+		res.json({"message": { "text": "소녀전선 메인 스토리 : http://gfl.zzzzz.kr/story_list.php\n소녀전선 서브 스토리 : http://gfl.zzzzz.kr/substory_list.php" }, "message_button": { "label": "소전DB 스토리목록", "url": "http://gfl.zzzzz.kr/story_list.php" }, "keyboard": {"type": "buttons", "buttons": mainmenu}});
 		return;
 	}
 	else if(content === "제대편성&DPS시뮬") {
 		res.json({"message": { "text": "소전DB 제대편성&DPS시뮬레이터 : http://gfl.zzzzz.kr/simulator.php" }, "message_button": { "label": "소전DB 제대편성&DPS시뮬레이터", "url": "http://gfl.zzzzz.kr/simulator.php" }, "keyboard": {"type": "buttons", "buttons": mainmenu}});
-		//saveuser(user, 2);
 		return;
 	}
 	else if(level == 0) {
@@ -89,14 +91,83 @@ app.post('/message', (req, res) => {
 					"buttons": mainmenu
 				}
 			});
+			saveuser(user, 0);
 			return;
 		}
 	}
 	
 	var num = parseInt(content);
-	if(num == 0) {
-		res.json({"message": { "text": "정확하지 않은 값입니다." } , "keyboard": {"type": "buttons", "buttons": mainmenu}});
-		return;
+	//숫자가 아닐경우
+	if(num == 0 || isNaN(num)) {
+		//인형 level일 경우
+		if(level == 1) {
+			var doll = getDollFromName(content);
+			if(doll) {
+				var message = "레어도 : " + doll.rank + "성\n";
+				
+				if(typeof doll.krName !== 'undefined')
+					message += "이름 : " + doll.krName + "\n";
+				else 
+					message += "이름 : " + doll.name + "\n";
+				
+				message += "종류 : " + doll.type.toUpperCase();
+				message += "\n\n상세정보 : http://gfl.zzzzz.kr/doll.php?id=" + doll.id;
+				
+				res.json({
+					"message": {
+						"text": message,
+						"photo": {
+							"url": "http://gfl.zzzzz.kr/img/dolls/" + doll.id + ".png",
+							"width": 512,
+							"height": 512
+						},
+						"message_button": {
+							"label": "소전DB 상세정보 페이지",
+							"url": "http://gfl.zzzzz.kr/doll.php?id=" + doll.id
+						}
+					},
+					"keyboard": {
+						"type": "buttons",
+						"buttons": mainmenu
+					}
+				});
+				saveuser(user, 0);
+				return;
+			}
+		}
+		//장비 level일경우
+		else if(level == 2) {
+			var fairy = getFairyFromName(content);
+			if(fairy){
+				var message = fairy.krName;
+				message += "\n\n상세정보 : http://gfl.zzzzz.kr/fairy.php?id=" + fairy.id;
+				
+				res.json({
+					"message": {
+						"text": message,
+						"photo": {
+							"url": "http://gfl.zzzzz.kr/img/fairy/" + fairy.name + "_3.png",
+							"width": 512,
+							"height": 512
+						},
+						"message_button": {
+							"label": "소전DB 상세정보 페이지",
+							"url": "http://gfl.zzzzz.kr/fairy.php?id=" + fairy.id
+						}
+					},
+					"keyboard": {
+						"type": "buttons",
+						"buttons": mainmenu
+					}
+				});
+				saveuser(user, 0);
+				return;
+			}
+		}
+		else {
+			res.json({"message": { "text": "정확하지 않은 값입니다." } , "keyboard": {"type": "buttons", "buttons": mainmenu}});
+			return;
+		}
 	}
 	
 	if(!isNaN(num)) {
@@ -133,6 +204,7 @@ app.post('/message', (req, res) => {
 							"buttons": mainmenu
 						}
 					});
+					saveuser(user, 0);
 					return;
 				}
 				else {
@@ -193,6 +265,7 @@ app.post('/message', (req, res) => {
 							"buttons": mainmenu
 						}
 					});
+					saveuser(user, 0);
 					return;
 				}
 				else {
@@ -233,6 +306,7 @@ app.post('/message', (req, res) => {
 							"buttons": mainmenu
 						}
 					});
+					saveuser(user, 0);
 					return;
 				}
 				else {
@@ -261,14 +335,29 @@ function getFairyFromTime(time) {
 	return false;
 }
 
+function getFairyFromName(name) {
+	for(var i in fairys) {
+		if(convSearch(name) == fairys[i].name || convSearch(name) == fairys[i].krName) {
+			return fairys[i];
+			break;
+		}
+	}
+	
+	return false;
+}
+
 function getDollFromName(name) {
 	for(var i in dolls) {
-		if(dolls[i].name == name || dolls[i].krName == name) {
+		if(convSearch(dolls[i].name) == convSearch(name) || convSearch(dolls[i].krName) == convSearch(name)) {
 			return dolls[i];
 			break;
 		}
 	}
 	return false;
+}
+
+function convSearch(str) {
+	return str.replace(/ /g,'');
 }
 
 function getDollFromTime(time) {
