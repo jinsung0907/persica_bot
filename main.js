@@ -48,7 +48,7 @@ app.post('/message', (req, res) => {
 		res.json({"message": { "text": "제조시간표 : http://gfl.zzzzz.kr/timetable.php" }, "message_button": { "label": "소전DB 제조시간표", "url": "http://gfl.zzzzz.kr/timetable.php" }, "keyboard": {"type": "buttons", "buttons": mainmenu}});
 		return;
 	}
-	else if(content === "스토리") {
+	else if(content === "스토리모음") {
 		res.json({"message": { "text": "소녀전선 메인 스토리 : http://gfl.zzzzz.kr/story_list.php\n소녀전선 서브 스토리 : http://gfl.zzzzz.kr/substory_list.php" }, "message_button": { "label": "소전DB 스토리목록", "url": "http://gfl.zzzzz.kr/story_list.php" }, "keyboard": {"type": "buttons", "buttons": mainmenu}});
 		return;
 	}
