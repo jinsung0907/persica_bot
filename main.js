@@ -292,7 +292,7 @@ app.post('/message', (req, res) => {
 						"message": {
 							"text": message,
 							"photo": {
-								"url": "http://gfl.zzzzz.kr/img/equip/" + getEquipImg(equip[0]) + ".png",
+								"url": "http://gfl.zzzzz.kr/img/equip/" + equip.code + ".png",
 								"width": 256,
 								"height": 256
 							},
@@ -519,50 +519,6 @@ function getEquipType(category, type) {
 	
 	return result;
 }	
-
-function getEquipImg(data) {
-    let spriteName;
-    if (data.fitGuns) {
-      dollList.forEach((doll) => {
-        if (data.fitGuns[0] === doll.id) {
-          let dollName = doll.name.toLowerCase();
-
-          if (dollName.search('ump') !== -1) { dollName = 'ump'; }
-          if (dollName.search('ak') !== -1) { dollName = 'ak'; }
-
-          spriteName = `${data.type}_${dollName}`;
-        }
-      });
-    } else {
-      switch (data.type) {
-        case 'suit': {
-          let spriteNum;
-
-          switch (data.rank) {
-            case 5: spriteNum = 3; break;
-            case 4: spriteNum = 2; break;
-            default: spriteNum = 1; break;
-          }
-          spriteName = `${data.type}_${spriteNum.toString()}`;
-        } break;
-        case 'sgBullet': {
-          let detail = 'b';
-          if (data.name.search('슬러그') !== -1) { detail = 's'; }
-
-          spriteName = `${data.type}_${detail}`;
-        } break;
-        case 'skeleton':
-          spriteName = `${data.type}${(data.name.search('X') !== -1) ? '_x' : ''}`; break;
-
-        default: spriteName = data.type; break;
-      }
-
-      if (data.name.search('16Lab') !== -1) {
-        spriteName = `${spriteName}_lab`;
-      }
-    }
-    return `${spriteName}`;
-}
 
 function saveuser(userkey, lev) {
 	fs.writeFileSync('session/' + userkey, lev);
