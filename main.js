@@ -284,25 +284,25 @@ app.post('/message', (req, res) => {
 					if(Array.isArray(equip)) {
 						var message = '';
 						for(var i in equip) {
-							message += "랭크 : " + equip[i].rank + "성\n이름 : " + equip[i].name + "\n종류 : " + getEquipType(equip[i].category, equip[i].type) + "\n스탯 : \n" + getEquipAttr(equip[i].stats, equip[i].name, equip[i].type);
+							message += "랭크 : " + equip[i].rank + "성\n이름 : " + equip[i].krName + "\n스탯 : " + getEquipAttr(equip[i].stats, equip[i].name, equip[i].type);
 							message += "\n======\n";
 						}
 					}
 					else {
-						var message = "랭크 : " + equip.rank + "성\n이름 : " + equip.name + "\n종류 : " + getEquipType(equip.category, equip.type) + "\n스탯 : \n" + getEquipAttr(equip.stats, equip.name, equip.type);
+						var message = "랭크 : " + equip.rank + "성\n이름 : " + equip.krName + "\n스탯 : " + getEquipAttr(equip.stats, equip.name, equip.type);
 					}
 					
 					res.json({
 						"message": {
 							"text": message,
 							"photo": {
-								"url": "http://gfl.zzzzz.kr/img/equip/" + equip.code + ".png",
+								"url": "http://gfl.zzzzz.kr/img/equip/" + equip[0].code + ".png",
 								"width": 256,
 								"height": 256
 							},
 							"message_button": {
-								"label": "소전DB 장비 기능 준비중입니다.",
-								"url": "about:blank"
+								"label": "소전DB 장비 상세페이지",
+								"url": "http://gfl.zzzzz.kr/equip.php"
 							}
 						},
 						"keyboard": {
@@ -381,7 +381,7 @@ function getDollFromTime(time) {
                 ex = Number(ex);
                 if(ex === 1 || ex === 2)
                     chk = true;
-            }
+            });
             if(chk === false) 
                 continue;
             
@@ -410,9 +410,9 @@ function getEquipFromTime(time) {
 	for(var i in equips) {
 		if(time == equips[i].buildTime) {
             
-            //회사로 제조가능 장비 거르기
+            //회사로 제조가능 장비 거르기, 전용장비도 거르기
             var cp = equips[i].company;
-            if(cp !== "BM" && cp !== "EOT" && cp !== "AMP" && cp !== "IOP" && cp !== "PMC" && cp !== "AC") 
+            if(cp !== "BM" && cp !== "EOT" && cp !== "AMP" && cp !== "IOP" && cp !== "PMC" && cp !== "AC" && cp !== "ILM" || typeof equips[i].fitgun !== 'undefined') 
                 continue;
             
 			arr.push(equips[i]);
