@@ -405,6 +405,12 @@ function getEquipFromTime(time) {
 	
 	for(var i in equips) {
 		if(time == equips[i].buildTime) {
+            
+            //회사로 제조가능 장비 거르기
+            var cp = equips[i].company;
+            if(cp !== "BM" && cp !== "EOT" && cp !== "AMP" && cp !== "IOP" && cp !== "PMC" && cp !== "AC") 
+                continue;
+            
 			arr.push(equips[i]);
 			count++
 		}
@@ -420,66 +426,66 @@ function getEquipFromTime(time) {
 function getEquipAttr(stats, name, type) {
 	var result = '';
 	if (typeof stats.armor !== 'undefined') {
-		result += "장갑+" + stats.armor.min + " ";
+		result += "장갑+" + stats.armor.max + " ";
 	}
 	
 	if (typeof stats.dodge !== 'undefined') {
-		if(type == 'ammoBox')
-			result += "회피" + stats.dodge.min + " ";
+		if(type == 'ammoBox' || type == 'armor')
+			result += "회피" + stats.dodge.max + " ";
 		else
-			result += "회피+" + stats.dodge.min + " ";
+			result += "회피+" + stats.dodge.max + " ";
 	}
 	
 	if (typeof stats.hit !== 'undefined') {
-		result += "명중+" + stats.hit.min + " ";
+		result += "명중+" + stats.hit.max + " ";
 	}
 	
 	if (typeof stats.pow !== 'undefined') {
 		if(type == 'sgBullet' && name == '슬러그')
-			result += "화력%" + stats.pow.min + " ";
+			result += "화력%" + stats.pow.max + " ";
 		else if(type == 'skeleton' && (name == "IOP T4 외골격" || name == "IOP T3 외골격" || name == "IOP T2 외골격" || name == "IOP T1 외골격"))
-			result += "화력" + stats.pow.min + " ";
+			result += "화력" + stats.pow.max + " ";
 		else
-			result += "화력+" + stats.pow.min + " ";
+			result += "화력+" + stats.pow.max + " ";
 	}
 	
 	if (typeof stats.range !== 'undefined') {
-		result += "사거리+" + stats.range.min + " ";
+		result += "사거리+" + stats.range.max + " ";
 	}
 	
 	if (typeof stats.rate !== 'undefined') {
-		result += "사속+" + stats.rate.min + " ";
+		result += "사속+" + stats.rate.max + " ";
 	}
 	
 	if (typeof stats.crit !== 'undefined') {
-		result += "치명타율+" + stats.crit.min + "% ";
+		result += "치명타율+" + stats.crit.max + "% ";
 	}
 	
 	if (typeof stats.critDmg !== 'undefined') {
-		result += "치명피해+" + stats.critDmg.min + "% ";
+		result += "치명피해+" + stats.critDmg.max + "% ";
 	}
 	
 	if (typeof stats.armorPiercing !== 'undefined') {
 		if(type == 'hpBullet')
-			result += "관통" + stats.armorPiercing.min + " ";
+			result += "관통" + stats.armorPiercing.max + " ";
 		else 
-			result += "관통+" + stats.armorPiercing.min + " ";
+			result += "관통+" + stats.armorPiercing.max + " ";
 	}
 	
 	if (typeof stats.nightView !== 'undefined') {
-		result += "야시능력+" + stats.nightView.min + "% ";
+		result += "야시능력+" + stats.nightView.max + "% ";
 	}
 	
 	if (typeof stats.coolDown !== 'undefined') {
-		result += "쿨타임 감소+" + stats.coolDown.min + "% ";
+		result += "쿨타임 감소+" + stats.coolDown.max + "% ";
 	}
 	
 	if (typeof stats.bullet !== 'undefined') {
-		result += "장탄수+" + stats.bullet.min + " ";
+		result += "장탄수+" + stats.bullet.max + " ";
 	}
 	
 	if (typeof stats.speed !== 'undefined') {
-		result += "이동속도+" + stats.speed.min + " ";
+		result += "이동속도+" + stats.speed.max + " ";
 	}
 	return result;
 }
