@@ -369,6 +369,18 @@ function getDollFromTime(time) {
 	var count = 0;
 	for(var i in dolls) {
 		if(time == dolls[i].buildTime) {
+            
+            //drop을 이용해 제조불가 인형 거르기
+            var exp = dolls[i].drop.split(',');
+            var chk = false;
+            exp.forEach(function(ex) {
+                ex = Number(ex);
+                if(ex === 1 || ex === 2)
+                    chk = true;
+            }
+            if(chk === false) 
+                continue;
+            
 			arr.push(dolls[i]);
 			count++;
 		}
