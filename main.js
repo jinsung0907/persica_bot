@@ -20,6 +20,10 @@ var fairys = JSON.parse(fs.readFileSync('json/fairy.json', 'utf8'));
 var mainmenu = ["인형", "장비", "시간표", "스토리모음", "제대편성&DPS시뮬"];
 
 app.get('/keyboard', (req, res) => {
+    var user = req.body.user_key;
+    var level = loaduser(user);
+    if(level === 1 || level === 2)
+        res.json({ "type": "text" });
 	res.json({"type": "buttons", "buttons": mainmenu});
 });
 
@@ -56,11 +60,11 @@ app.post('/message', (req, res) => {
 		res.json({"message": { "text": "소전DB 제대편성&DPS시뮬레이터 : http://gfl.zzzzz.kr/simulator.php" }, "message_button": { "label": "소전DB 제대편성&DPS시뮬레이터", "url": "http://gfl.zzzzz.kr/simulator.php" }, "keyboard": {"type": "buttons", "buttons": mainmenu}});
 		return;
 	}
-	else if(level == 0) {
+	else if(level === 0) {
 		res.json({"message": { "text": "정확하지 않은 값입니다." }, "keyboard": {"type": "buttons", "buttons": mainmenu}});
 		return;
 	}
-	else if(level == 3) {
+	else if(level === 3) {
 		var doll = getDollFromName(content);
 		if(doll) {
 			var message = "레어도 : " + doll.rank + "성\n";
@@ -100,7 +104,7 @@ app.post('/message', (req, res) => {
 	//숫자가 아닐경우
 	if(num == 0 || isNaN(num)) {
 		//인형 level일 경우
-		if(level == 1) {
+		if(level === 1) {
 			var doll = getDollFromName(content);
 			if(doll) {
 				var message = "레어도 : " + doll.rank + "성\n";
@@ -136,7 +140,7 @@ app.post('/message', (req, res) => {
 			}
 		}
 		//장비 level일경우
-		else if(level == 2) {
+		else if(level === 2) {
 			var fairy = getFairyFromName(content);
 			if(fairy){
 				var message = fairy.krName;
@@ -172,7 +176,7 @@ app.post('/message', (req, res) => {
 	
 	if(!isNaN(num)) {
 		//인형 level일경우
-		if(level == 1) {
+		if(level === 1) {
 			var doll = getDollFromTime(num);
 			if(doll) {
 				if(!Array.isArray(doll)) {
@@ -239,7 +243,7 @@ app.post('/message', (req, res) => {
 		}
 		
 		//장비 level일경우
-		else if(level == 2) {
+		else if(level === 2) {
 			//요정일경우 
 			if(num >= 300) {
 				var fairy = getFairyFromTime(num);
@@ -532,5 +536,5 @@ function loaduser(userkey) {
 		var data = 0;
 	}
 	
-	return data;
+	return Number(data);
 }
